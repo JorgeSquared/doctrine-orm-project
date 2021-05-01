@@ -1,7 +1,7 @@
 Readme
 ======
 
-##Run the local development server
+## Run the local development server
 
 ```shell
 php -S localhost:8000
@@ -19,7 +19,7 @@ By the way, there is a few prerequisites:
  - you have to have Composer installed
  - and you should definitely have some SQL interface at your disposal
 
-##Clone the repository and steal it
+## Clone the repository and steal it
 
 Well, to tell the least, you should also clone the project from its GitHub repository:
 https://github.com/xmeltrut/doctrine-orm-project
@@ -42,7 +42,7 @@ git remote set-url origin git@github.com:JorgeSquared/doctrine-orm-project.git
 
 Ok, now the repo is yours!
 
-##Go!
+## Go!
 
 The do exactly as the guy says. It is working up to Section 4 included. You can go along 
 only Phpstorm and its database plugin if you manually create a database from terminal:
