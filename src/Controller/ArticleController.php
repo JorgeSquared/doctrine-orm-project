@@ -8,9 +8,15 @@ use Slim\Exception\HttpNotFoundException;
 
 class ArticleController extends Controller
 {
-	public function view(Request $request, Response $response)
+	public function view(Request $request, Response $response, $args = [])
 	{
-		$article = $this->ci->get('db')->find('App\Entity\Article', 1);
+		$article = $this->ci->get('db')->getRepository('App\Entity\Article')->findOneBy([
+			'slug' => $args['slug']
+		]);
+
+		if (!$article) {
+			throw new HttpNotFoundException($request);
+		}
 		return $this->renderPage($response, 'article.html', [
 			'article' => $article
 		]);
