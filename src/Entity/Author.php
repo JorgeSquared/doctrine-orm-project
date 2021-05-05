@@ -4,6 +4,7 @@
 namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @Entity
@@ -24,6 +25,7 @@ class Author
 
 	/**
 	 * @OneToMany(targetEntity="Article", mappedBy="author")
+	 * @OrderBy({"published" = "DESC"})
 	 */
 	private $articles;
 
