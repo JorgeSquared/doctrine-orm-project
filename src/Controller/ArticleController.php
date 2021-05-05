@@ -21,4 +21,21 @@ class ArticleController extends Controller
 			'article' => $article
 		]);
 	}
+
+	public function viewQB(Request $request, Response $response, $args =[])
+	{
+		$qb = $this->ci->get('db')->createQueryBuilder();
+
+		$qb->select('a')
+			->from('App\Entity\Article', 'a')
+			->where('a.slug = :slug')
+			->setParameter('slug', $args['slug']);
+
+		$query = $qb->getQuery();
+		$article = $query->getSingleResult();
+
+		return $this->renderPage($response, 'article.html', [
+			'article' => $article
+		]);
+	}
 }
