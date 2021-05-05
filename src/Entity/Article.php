@@ -41,6 +41,11 @@ class Article
 	private $published;
 
 	/**
+	 * @ManyToOne(targetEntity="Author", inversedBy="articles")
+	 */
+	private $author;
+
+	/**
 	 * @return mixed
 	 */
 	public function getId()
@@ -134,6 +139,22 @@ class Article
 	public function setPublished(\DateTime $published = null)
 	{
 		$this->published = $published;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getAuthor()
+	{
+		return $this->author;
+	}
+
+	/**
+	 * @param mixed $author
+	 */
+	public function setAuthor(Author $author)
+	{
+		$this->author = $author;
 	}
 
 }

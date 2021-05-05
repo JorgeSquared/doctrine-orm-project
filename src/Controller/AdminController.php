@@ -21,27 +21,27 @@ class AdminController extends Controller
         ]);
     }
 
-    public function create(Request $request, Response $response, $args = [])
-	{
-		$article = new Article;
+    public function create(Request $request, Response $response)
+    {
+        $article = new Article;
 
-		if ($request->isPost()) {
-			$article->setName($request->getParam('name'));
-			$article->setSlug($request->getParam('slug'));
-			$article->setImage($request->getParam('image'));
-			$article->setBody($request->getParam('body'));
-			$article->setPublished(new \DateTime);
+        if ($request->isPost()) {
+            $article->setName($request->getParam('name'));
+            $article->setSlug($request->getParam('slug'));
+            $article->setImage($request->getParam('image'));
+            $article->setBody($request->getParam('body'));
+            $article->setPublished(new \DateTime);
 
-			$this->ci->get('db')->persist($article);
-			$this->ci->get('db')->flush();
+            $this->ci->get('db')->persist($article);
+            $this->ci->get('db')->flush();
 
-			return $response->withRedirect('/admin');
-		}
+            return $response->withRedirect('/admin');
+        }
 
-		return $this->renderPage($response, 'admin/create.html', [
-			'article' => $article
-		]);
-	}
+        return $this->renderPage($response, 'admin/create.html', [
+            'article' => $article
+        ]);
+    }
 
     public function edit(Request $request, Response $response, $args = [])
     {
@@ -52,25 +52,49 @@ class AdminController extends Controller
         }
 
         if ($request->isPost()) {
-        	if ($request->getParam('action') == 'delete') {
-        		$this->ci->get('db')->remove($article);
-        		$this->ci->get('db')->flush();
+            if ($request->getParam('action') == 'delete') {
+                $this->ci->get('db')->remove($article);
+                $this->ci->get('db')->flush();
 
-        		return $response->withRedirect('/admin');
-			}
-        	$article->setName($request->getParam('name'));
-        	$article->setSlug($request->getParam('slug'));
-        	$article->setImage($request->getParam('image'));
-        	$article->setBody($request->getParam('body'));
+                return $response->withRedirect('/admin');
+            }
 
-        	$this->ci->get('db')->persist($article);
-        	$this->ci->get('db')->flush();
+            $article->setName($request->getParam('name'));
+            $article->setSlug($request->getParam('slug'));
+            $article->setImage($request->getParam('image'));
+            $article->setBody($request->getParam('body'));
 
-        	$this->ci->get('templating')->setData('msg', 'Article updated successfully');
-		}
+            $article->setAuthor(
+                $this->ci->get('db')->find('App\Entity\Author', $request->getParam('author'))
+            );
+
+            $this->ci->get('db')->persist($article);
+            $this->ci->get('db')->flush();
+
+            $this->ci->get('templating')->setData('msg', 'Article updated successfully');
+        }
+
+        $authors = $this->ci->get('db')->getRepository('App\Entity\Author')->findBy([], ['name' => 'ASC']);
 
         return $this->renderPage($response, 'admin/edit.html', [
-            'article' => $article
+            'article' => $article,
+            'authors' => $this->authorDropdown($authors, $article)
         ]);
+    }
+
+    private function authorDropdown($authors, $article)
+    {
+        $options = [];
+
+        foreach ($authors as $author) {
+            $options[] = sprintf(
+                '<option value="%s" %s>%s</option>',
+                $author->getId(),
+                ($author== $article->getAuthor()) ? 'selected' : '',
+                $author->getName()
+            );
+        }
+
+        return implode($options);
     }
 }
